@@ -1,12 +1,6 @@
-
-
-
-
-//---------------------------
-
-
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,25 +11,44 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
+import javax.sql.rowset.spi.SyncResolver;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import javax.xml.transform.stax.StAXResult;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import javax.swing.text.*;
+import javax.swing.text.AttributeSet.ColorAttribute;
+
+import java.nio.file.Files;
 
 
 public class dragAndDrop {
 
-    
 
     public dragAndDrop() {
         EventQueue.invokeLater(new Runnable() {
@@ -47,7 +60,7 @@ public class dragAndDrop {
                     ex.printStackTrace();
                 }
 
-                JFrame frame = new JFrame("Testing");
+                JFrame frame = new JFrame("TAŞAK");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.add(new TestPane());
                 frame.pack();
@@ -68,7 +81,7 @@ public class dragAndDrop {
         protected JPanel createTopPanel() {
             JPanel panel = new JPanel(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.anchor = GridBagConstraints.LINE_START;
+            gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridy = 0;
             gbc.weightx = 0;
             String firstRow[] = {"Q","W","E","R","T","Y","U","I","O","P"};
@@ -89,9 +102,8 @@ public class dragAndDrop {
                     }
                 });
             }
-
        
-            gbc.anchor = GridBagConstraints.LINE_START;
+            gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridy = 1;
             gbc.weightx = 0;
 
@@ -107,10 +119,11 @@ public class dragAndDrop {
                         TransferHandler handle = button.getTransferHandler();
                         handle.exportAsDrag(button, e, TransferHandler.COPY);
                     }
+                
                 });
             }
 
-            gbc.anchor = GridBagConstraints.LINE_START;
+            gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridy = 2;
             gbc.weightx = 0;
 
@@ -132,25 +145,80 @@ public class dragAndDrop {
 
             return panel;
         }
+        
 
         protected JPanel createBottomPanel() {
+            GridBagConstraints gbc = new GridBagConstraints();
             JPanel panel = new JPanel(new GridBagLayout());
-            String store[] = {" ", " ", " ", " ", " "};
+            ArrayList <JLabel> labels = new ArrayList<JLabel>();
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridy = 0;
+            JButton button = new JButton("Enter");
+            
+        
+           for(int i = 0; i < 25; i++){
+                if(i % 5 == 0)
+                {
+                    gbc.gridy += 1;
+                }
+                //JTextField field = new JTextField(5);
+                JLabel label = new JLabel();   
+                label.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY), new EmptyBorder(20, 20, 20, 20)));
+                label.setTransferHandler(new ValueImportTransferHandler());
+                label.setSize(20, 20); 
+                labels.add(label);
+                panel.add(label,gbc);
+                }
 
-            JLabel[] label = new JLabel[5];
+                    button.addActionListener(new ActionListener()
+                    {
+                        String selected = "start";
 
-            for(int i = 0; i < 5; i++)
-            { 
-                label[i].setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY), new EmptyBorder(20, 20, 20, 20)));
-                label[i].setTransferHandler(new ValueImportTransferHandler());
-                panel.add(label[i]);
-            }
-            store[4] = label.toString(); 
-            System.out.println(store);
-            //label.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY), new EmptyBorder(20, 20, 20, 20)));
-            //label.setTransferHandler(new ValueImportTransferHandler());
-            //panel.add(label);
+                        public void actionPerformed(ActionEvent e){
+                            for(int i = 0; i < 25; i++){
+                                String str[] = new String[25];
+                                
+
+                                if(labels.get(4).getText().length() == 1)
+                                {
+                                    str[i] = labels.get(i).getText();
+                                    if(str[i].contains("S")){
+                                    labels.get(0).setForeground(Color.MAGENTA);
+                                    System.out.println("amcik");
+                                    }
+                                    
+                                    System.out.print(str[i]);
+                                   continue;
+                                }
+                            
+                            
+                                //if()
+                               // {
+                                  //  
+                                    
+                                //} 
+                            
+                            }
+                        }
+                    });
+
+                
+
+              
+                
+
+                
+                panel.add(button);
+                
+        
+           /*  label.setBorder(new CompoundBorder(new LineBorder(Color.DARK_GRAY), new EmptyBorder(20, 20, 20, 20)));
+            label.setTransferHandler(new ValueImportTransferHandler());
+            panel.add(label);
+            */
+    
             return panel;
+
+            
         }
 
     }
