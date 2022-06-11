@@ -6,15 +6,19 @@ import javax.swing.JLabel;
 import java.awt.event.ActionEvent;
 import java.awt.event.*;
 import java.awt.event.ActionListener;
+import java.io.*;
+
 
 public class GUI extends keyboard implements ActionListener{
     public static JFrame frame_main;
     public static JPanel panel_main;
     public static JButton keyboardButton;
     public static JButton ddButton;
+   
 
 
-	public static void main(String[] args) {
+
+	public static void main(String[] args) throws IOException {
         panel_main = new JPanel();
         frame_main = new JFrame();
         frame_main.setSize(600, 200);
@@ -22,7 +26,10 @@ public class GUI extends keyboard implements ActionListener{
         frame_main.setTitle("SELECT AMK");
         frame_main.setLocationRelativeTo(null);
         frame_main.add(panel_main); 
-
+        FileWriter yazmk = new FileWriter("am.txt");
+        try (BufferedWriter out = new BufferedWriter(yazmk)) {
+            out.write(6+"");
+        }
         panel_main.setLayout(null);
         Title = new JLabel("SEÇ MQ ");
         Title.setBounds(10, 20, 80, 25);

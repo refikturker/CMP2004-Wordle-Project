@@ -17,7 +17,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
-//simon feb 25 - march 25 - April 17-20 2022
 
 class keyboard extends JFrame implements ActionListener {
     static int a = 0;
@@ -69,8 +68,7 @@ class keyboard extends JFrame implements ActionListener {
 
     button.setBounds(100, 20, 80, 25);
     panel.add(button);
-    //JLabel winScreen = new JLabel("Good Luck Have Fun Mate!");
-    //winScreen.setBounds(10, 50, 350, 25);
+
     labels = new JLabel[5];
     for (int i = 0; i < 5; i++) {
         labels[i] = new JLabel("<html><font size='5' color=blue> ----- </font> <font");
@@ -82,21 +80,19 @@ class keyboard extends JFrame implements ActionListener {
     }
    }
 
-   
 
+   
    void StartWordle() {
     a++;    
     userText1.addActionListener(new keyboard());
     button.addActionListener(new keyboard());
-    //makes an array of the possible words (12947 lines long)
     possibleWords = new String[12947];
-    try { //copied from https://replit.com/@skutschke/WordleWords#Main.java
+    try {
         File myObj = new File("wordleWords.txt");
         Scanner myReader = new Scanner(myObj);
         int indexCounter = 0;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
-            //add data to the array
             possibleWords[indexCounter] = data;
             indexCounter++;
         }
@@ -183,7 +179,6 @@ int[] PlayWordle(String InputWordleWord) {
             input[i] = R1.charAt(i);
         }
     }
-//just reset answer every time
     for (int i = 0; i < 5; i++ ) answer[i] = answerChoosen.charAt(i);
     return ReturnColorOfLeters(input, answer);
 }
@@ -239,7 +234,7 @@ boolean IsAValidWord(String input, String[] possibleWords) {
 String ReturnRandomWord(){
 
     String[] answerList = new String[2315];
-    try { //copied from https://replit.com/@skutschke/WordleWords#Main.java
+    try {
         File myObj = new File("wordleAnswers.txt");
         Scanner myReader = new Scanner(myObj);
         int indexCounter = 0;
