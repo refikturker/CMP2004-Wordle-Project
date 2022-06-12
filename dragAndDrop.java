@@ -13,44 +13,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.xml.transform.Templates;
-
 import java.io.*;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-import javax.xml.transform.stax.StAXResult;
 
 
-import java.awt.Font;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import javax.swing.text.*;
-import javax.swing.text.AttributeSet.ColorAttribute;
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
-import java.nio.file.Files;
-import java.text.BreakIterator;
 
 
 public class dragAndDrop {
@@ -67,7 +49,7 @@ public class dragAndDrop {
                     ex.printStackTrace();
                 }
 
-                JFrame frame = new JFrame("TAŞAK");
+                JFrame frame = new JFrame("Wordle");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.add(new TestPane());
                 frame.pack();
@@ -170,12 +152,11 @@ public class dragAndDrop {
             try {
                 File myObj = new File("wordleAnswers.txt");
                 Scanner myReader = new Scanner(myObj);
-                int indexCounter = 0;
+                int i = 0;
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
-                    //add data to the array
-                    answerList[indexCounter] = data;
-                    indexCounter++;
+                    answerList[i] = data;
+                    i++;
                 }
                 myReader.close();   
             } catch (FileNotFoundException e) {
@@ -190,7 +171,7 @@ public class dragAndDrop {
 
             boolean IsAValidWord(String input, String[] possibleWords) {
                 if (input.length() < 5) {
-                    System.out.println("Wordle: The Word You Entered Was Not Long Enough");
+                    System.out.println("The word you entered was not long enough");
                     return false;
                 }
                 for (String string : possibleWords) {
@@ -209,13 +190,8 @@ public class dragAndDrop {
             JPanel panel = new JPanel(new GridBagLayout());
             ArrayList <JLabel> labels = new ArrayList<JLabel>();
 
-            gbc.anchor = GridBagConstraints.SOUTHEAST;
-            gbc.gridy = 0;
-            System.out.println(selected);
-
-            JButton button = new JButton("Enter");
             
-            panel.add(button,gbc);
+       
         
              char [] answerChar = new char[5];
               stringToChar(answerChar, selected);
@@ -239,17 +215,29 @@ public class dragAndDrop {
                 label.setPreferredSize(new Dimension(74, 72));
                 labels.add(label);
                 panel.add(label,gbc);
+                
                
                 }
+                
+                gbc.anchor = GridBagConstraints.EAST;
+                gbc.gridy = 4;
+                gbc.ipadx = 44;
+                gbc.ipady = 44;
+                System.out.println(selected);
+                JButton enterButton = new JButton("ENTER");
+                
+
+               
+                
+                panel.add(enterButton,gbc);
 
             
-                    button.addActionListener(new ActionListener()
+                    enterButton.addActionListener(new ActionListener()
                     {
                         String  inputString;
                         String abc = "";
                         int c = 0;
                         char [] inputChar = new char[5];
-                        char [] gercekChar = new char[5];
                     
                         
                         
@@ -371,7 +359,7 @@ public class dragAndDrop {
                                 if(inputChar[0] == answerChar[0] && inputChar[1] == answerChar[1] && inputChar[2] == answerChar[2] && inputChar[3]  == answerChar[3] && inputChar[4]  == answerChar[4]){
                                     long score = (System.currentTimeMillis() - startTime);
                                     try {
-                                        FileWriter deneme = new FileWriter("deneme.txt", true);
+                                        FileWriter deneme = new FileWriter("scoreboard.txt", true);
                                         try (BufferedWriter yazici = new BufferedWriter(deneme)) {
                                             yazici.write((int) score + "");
                                             yazici.newLine();
@@ -383,7 +371,7 @@ public class dragAndDrop {
                                     }
                                     int highScore = (int) score;
                                     try {
-                                        BufferedReader reader = new BufferedReader(new FileReader("deneme.txt"));
+                                        BufferedReader reader = new BufferedReader(new FileReader("scoreboard.txt"));
                                         String line = reader.readLine();
                                         while (line != null)                 // read the score file line by line
                                         {
@@ -409,18 +397,19 @@ public class dragAndDrop {
                                     System.out.println(highScore);
                                     JLabel highScoreLabel = new JLabel("Highest score is " + highScore + " miliseconds");
                                     JLabel win = new JLabel("Congratulations you have won in " + score + " miliseconds");
+                                    
                                     JFrame winFrame = new JFrame();
-                                    winFrame.setSize(400,300);
-                                    win.setAlignmentX(30);
-                                    win.setAlignmentY(30);
-                                    win.setBounds(0,0, 30, 30);
-                                    highScoreLabel.setBounds(0,40, 300, 30);
+                                    ImageIcon icon = new ImageIcon("trophy.gif");
+                                    JLabel animation = new JLabel(icon);
 
-                                    highScoreLabel.setAlignmentX(30);
-                                    highScoreLabel.setAlignmentY(100);
+                                    winFrame.setSize(400,800);
+                                    win.setBounds(40,60, 400, 30);
+                                    highScoreLabel.setBounds(80,40, 300, 30);
+                                    animation.setBounds(0, 0, 300, 550);
+                                 
                                     winFrame.add(highScoreLabel);
                                     winFrame.add(win);
-
+                                    winFrame.add(animation);
                                     winFrame.setVisible(true);
                         
                                  } 
@@ -438,7 +427,7 @@ public class dragAndDrop {
                     
                     });
 
-                panel.add(button);
+                panel.add(enterButton,gbc);
                 
             return panel;    
             

@@ -1,22 +1,15 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 import java.util.Scanner;
-import javax.xml.transform.Templates;
 import java.io.FileNotFoundException;
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.*;
 
 class keyboard extends JFrame implements ActionListener {
     static int a = 0;
@@ -41,6 +34,8 @@ class keyboard extends JFrame implements ActionListener {
    static char[] answer;
    static String answerChoosen;
    static boolean done;
+   FileWriter scoreBoard;
+   FileReader getHighScore;
 
    keyboard(){
     while(a<=0){
@@ -48,31 +43,26 @@ class keyboard extends JFrame implements ActionListener {
     frame = new JFrame();
     frame.setSize(800, 800);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setTitle("GUI");
+    frame.setTitle("WORDLE");
     frame.setLocationRelativeTo(null);
     frame.add(panel);
 
     panel.setLayout(null);
-    Title = new JLabel("Wordle: ");
-    Title.setBounds(10, 20, 80, 25);
-    panel.add(Title);
-
-    panel.setLayout(null);
     stats = new JLabel("Type a five letter word");
-    stats.setBounds(10, 50, 180, 25);
+    stats.setBounds(300, 100, 600, 25);
     panel.add(stats);
 
     userText1 = new JTextField();
-    userText1.setBounds(40, 80 + (0 * 25), 80, 25);
+    userText1.setBounds(300, 150, 150, 40);
     panel.add(userText1);
 
-    button.setBounds(100, 20, 80, 25);
+    button.setBounds(450, 150, 80, 40);
     panel.add(button);
 
     labels = new JLabel[5];
     for (int i = 0; i < 5; i++) {
-        labels[i] = new JLabel("<html><font size='5' color=blue> ----- </font> <font");
-        labels[i].setBounds(44, 80 + (i * 25), 80, 25);
+        labels[i] = new JLabel("<html><font size='30' color=blue> [][][][][][] </font> <font");
+        labels[i].setBounds(300, 170 + (i * 50), 250, 100);
         panel.add(labels[i]);
     }
     frame.setVisible(true);
@@ -104,8 +94,8 @@ class keyboard extends JFrame implements ActionListener {
 
     startTime = System.currentTimeMillis();
     tries = 0;
-    System.out.println("Wordle: Type A Five Letter Word");
     answerChoosen = ReturnRandomWord();
+    System.out.println(answerChoosen);
     answer = new char[5];
     for (int i = 0; i < 5; i++ ) answer[i] = answerChoosen.charAt(i);
 
@@ -113,14 +103,59 @@ class keyboard extends JFrame implements ActionListener {
 }
 
 public static void EndWordle() {
-    System.out.println("Wordle: The Answer Was: " + new String(answerChoosen));
-    System.out.println("Wordle: You Found The Answer in " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds and " + tries + " tries.");
+
 
     userText1.setEnabled(false);
     userText1.setVisible(false);
 
-    if (!done) stats.setText("<html><font size='1' color=red> " + "The Answer Was: " + new String(answerChoosen) + ". You wasted \n " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds (:" + "</font> <font");
-    else  stats.setText("<html><font size='1' color=green> " + "You Found The Answer in \n " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds and " + tries + " tries." + "</font> <font");
+    if(done){
+    long score = System.currentTimeMillis() - startTime;
+    try {
+        FileWriter deneme = new FileWriter("scoreboard.txt", true);
+        try (BufferedWriter yazici = new BufferedWriter(deneme)) {
+            yazici.write((int) score + "");
+            yazici.newLine();
+            yazici.close();
+        }
+    } catch (IOException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+    }
+    int highScore = (int) score;
+    try {
+        BufferedReader reader = new BufferedReader(new FileReader("scoreboard.txt"));
+        String line = reader.readLine();
+        while (line != null)                 
+        {
+            try {
+                int readValue = Integer.parseInt(line.trim());   
+                if (readValue < highScore)                       
+                { 
+                    highScore = readValue; 
+                }
+            } catch (NumberFormatException e1) {
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+
+    } catch (IOException ex) {
+        System.err.println("ERROR reading scores from file");
+    }
+    stats.setText("You Found The Answer in " + ((System.currentTimeMillis() - startTime) + " miliseconds.") + " Highest score is " + highScore);
+    JFrame winFrame = new JFrame();
+    JPanel winPanel = new JPanel();
+    winFrame.setSize(550,800);
+    winFrame.setVisible(true);
+    winFrame.add(winPanel);
+    winPanel.add(stats);
+    ImageIcon icon = new ImageIcon("trophy.gif");
+    JLabel win = new JLabel(icon);
+    win.setVisible(true);
+    win.setBounds(30, 40, 40, 40);
+    winPanel.add(win);
+
+    }
 }
 
 @Override
@@ -129,13 +164,13 @@ public void actionPerformed(ActionEvent e) {
     EnterWord();
 }
 
-void EnterWord(){ //if its good, actually submit the word for checking
+void EnterWord(){ 
     if ( IsAValidWord(userText1.getText(), possibleWords) ) ButtonPressed();
-    else System.out.println("Wordle: That is not a valid word");
+    else System.out.println("Not a valid word");
 }
 
 void ButtonPressed(){
-    userText1.setBounds(40, 80 + ((tries + 1) * 25), 80, 25);
+    userText1.setBounds(300, 150, 150, 40);
 
     String userInput = userText1.getText();
     int[] colorOfLetters = PlayWordle(userInput);
@@ -153,29 +188,29 @@ void ButtonPressed(){
         else if (colorOfLetters[i] == 2) numsToColors[i] = "green";
     }
 
-    System.out.println("Set colors to " + numsToColors[0] + " " + numsToColors[1] + " " + numsToColors[2] + " " + numsToColors[3] + " " + numsToColors[4] + " User Input was" + userInput + " answer was " + answerChoosen + " work on word is " + new String(answer));
+    
     String finalString = (
-    "<html><font size='5' color=" + numsToColors[0] + "> " + userInput.charAt(0) + "</font> <font            " + 
-    "<html><font size='5' color=" + numsToColors[1] + "> " + userInput.charAt(1) + "</font> <font            " + 
-    "<html><font size='5' color=" + numsToColors[2] + "> " + userInput.charAt(2) + "</font> <font            " + 
-    "<html><font size='5' color=" + numsToColors[3] + "> " + userInput.charAt(3) + "</font> <font            " + 
-    "<html><font size='5' color=" + numsToColors[4] + "> " + userInput.charAt(4) + "</font> <font            ");
+    "<html><font size='10' color=" + numsToColors[0] + "> " + userInput.charAt(0) + "</font> <font            " + 
+    "<html><font size='10' color=" + numsToColors[1] + "> " + userInput.charAt(1) + "</font> <font            " + 
+    "<html><font size='10' color=" + numsToColors[2] + "> " + userInput.charAt(2) + "</font> <font            " + 
+    "<html><font size='10' color=" + numsToColors[3] + "> " + userInput.charAt(3) + "</font> <font            " + 
+    "<html><font size='10' color=" + numsToColors[4] + "> " + userInput.charAt(4) + "</font> <font            ");
     setNextLabel(finalString);
 
-    userText1.setText(""); //set the text box to "" after all the logic is done
+    userText1.setText("");
 }
 
 int[] PlayWordle(String InputWordleWord) {
     done = false;
     tries++;
 
-    String R1 = InputWordleWord.toLowerCase();//String R1 = s.nextLine().toLowerCase();
+    String R1 = InputWordleWord.toLowerCase();
 
-    //check if it is 5 letters and is a possible word
+
     if (!IsAValidWord(R1, possibleWords)) {
         System.out.println("wasnt a good word");
     } else {
-        for (int i = 0; i < 5; i++ ) { //puts the inputWord into a char[]
+        for (int i = 0; i < 5; i++ ) {
             input[i] = R1.charAt(i);
         }
     }
@@ -189,19 +224,18 @@ void setNextLabel(String string){
 
 int[] ReturnColorOfLeters(char[] inputWord, char[] correctWord) {
     char[] answerTemp = correctWord;
-    int[] colorForLetter = new int[5]; //0 is grey, yellow is 1, green is 2
+    int[] colorForLetter = new int[5]; 
 
-    for (int i = 0; i < 5; i++) { //check for any correct position+letter (green)
+    for (int i = 0; i < 5; i++) { 
         if (inputWord[i] == answerTemp[i]) {
             answerTemp[i] = '-';
             colorForLetter[i] = 2;
         }
     }
 
-    for (int j = 0; j < 5; j++) { //check for any correct letter (yellow)
+    for (int j = 0; j < 5; j++) {
         for (int k = 0; k < 5; k++){
             if (inputWord[j] == answerTemp[k] && colorForLetter[j] != 2) {
-                //if that letter is not already green and matches some other letter
                 colorForLetter[j] = 1;
                 answerTemp[k] = '-';
             }
@@ -220,7 +254,7 @@ int[] ReturnColorOfLeters(char[] inputWord, char[] correctWord) {
 
 boolean IsAValidWord(String input, String[] possibleWords) {
     if (input.length() < 5) {
-        System.out.println("Wordle: The Word You Entered Was Not Long Enough");
+        System.out.println("Word not long enough.");
         return false;
     }
     for (String string : possibleWords) {
@@ -250,7 +284,8 @@ String ReturnRandomWord(){
         e.printStackTrace();
     }
 
-    return answerList[(int)(Math.random() * (answerList.length - 1))]; //returns a random word from this large list
+    return answerList[(int)(Math.random() * (answerList.length - 1))];
+
     }
     
 }
