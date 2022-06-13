@@ -1,5 +1,8 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -8,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.util.Scanner;
+import java.util.Timer;
 import java.io.FileNotFoundException;
 import java.io.*;
 
@@ -20,6 +24,23 @@ class keyboard extends JFrame implements ActionListener {
     static JTextField userText1;
     static JLabel[] labels;
     static JButton button = new JButton("Enter");
+    static Image kupa;
+   
+
+    static double x = 0,y = 0,velX = 2,velY = 2;
+
+    public void paint (Graphics g){
+        super.paint(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.drawImage(kupa, 25,50,25,25, this);
+    
+    }
+
+   
+
+
+
 
 
    public static Scanner s = new Scanner(System.in);
@@ -102,6 +123,11 @@ class keyboard extends JFrame implements ActionListener {
     input = new char[5];
 }
 
+
+
+
+
+
 public static void EndWordle() {
 
 
@@ -144,16 +170,17 @@ public static void EndWordle() {
     }
     stats.setText("You Found The Answer in " + ((System.currentTimeMillis() - startTime) + " miliseconds.") + " Highest score is " + highScore);
     JFrame winFrame = new JFrame();
-    JPanel winPanel = new JPanel();
-    winFrame.setSize(550,800);
+    winFrame.setSize(500,500);
     winFrame.setVisible(true);
-    winFrame.add(winPanel);
-    winPanel.add(stats);
-    ImageIcon icon = new ImageIcon("trophy.gif");
-    JLabel win = new JLabel(icon);
-    win.setVisible(true);
-    win.setBounds(30, 40, 40, 40);
-    winPanel.add(win);
+    stats.setAlignmentY(0);
+    stats.setVisible(true);
+    
+    MyPanel panel;
+    panel = new MyPanel();
+    panel.setAlignmentY(20);
+    panel.add(stats);
+    winFrame.add(panel);
+    panel.setVisible(true);
 
     }
 }
@@ -162,6 +189,7 @@ public static void EndWordle() {
 public void actionPerformed(ActionEvent e) {
     // TODO Auto-generated method stub // if the button is pressed
     EnterWord();
+
 }
 
 void EnterWord(){ 

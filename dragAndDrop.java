@@ -396,21 +396,22 @@ public class dragAndDrop {
                                     
                                     System.out.println(highScore);
                                     JLabel highScoreLabel = new JLabel("Highest score is " + highScore + " miliseconds");
-                                    JLabel win = new JLabel("Congratulations you have won in " + score + " miliseconds");
-                                    
+                                    JLabel win = new JLabel("Congratulations you have won in " + score + " miliseconds"+ ". ");                                    
                                     JFrame winFrame = new JFrame();
-                                    ImageIcon icon = new ImageIcon("trophy.gif");
-                                    JLabel animation = new JLabel(icon);
-
-                                    winFrame.setSize(400,800);
+                    
+                                    winFrame.setSize(500,500);
                                     win.setBounds(40,60, 400, 30);
-                                    highScoreLabel.setBounds(80,40, 300, 30);
-                                    animation.setBounds(0, 0, 300, 550);
-                                 
-                                    winFrame.add(highScoreLabel);
-                                    winFrame.add(win);
-                                    winFrame.add(animation);
+                                    highScoreLabel.setBounds(80,40, 300, 30);                                                
                                     winFrame.setVisible(true);
+
+                                    MyPanel panel;
+                                    panel = new MyPanel();
+                                    panel.setAlignmentY(20);
+                                    panel.add(win);
+                                    panel.add(highScoreLabel);
+                                    winFrame.add(panel);
+                                    panel.setVisible(true);
+                                
                         
                                  } 
                             
